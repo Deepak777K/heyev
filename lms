@@ -1,0 +1,420 @@
+Test Case ID,Test Category,Test Scenario,Test Description,Preconditions,Test Steps,Expected Result,Test Data,Priority,Status
+TC_DP_001,Page Rendering,Initial Page Load,Verify page loads correctly with all essential elements,"User has access to LMS DownPayment page, User is logged in","1. Navigate to LMS DownPayment page
+2. Wait for page to load completely","1. Page header shows 'LMS - Down Payment'
+2. CollectionBanner component displays correctly
+3. LMSSearchFilter component is visible
+4. Page background is gray-200
+5. No errors are displayed",N/A,High,Not Started
+TC_DP_002,Page Rendering,Loading Overlay Display,Verify loading overlay appears during data fetch,"User is on LMS DownPayment page","1. Select a center from dropdown
+2. Observe loading state","1. LoadingOverlay component is displayed
+2. Message shows 'Loading DownPayment Collections'
+3. Loading overlay has correct data-testid
+4. Page content is obscured during loading",Valid center data,High,Not Started
+TC_DP_003,Filter Functionality,Center Selection,Verify center selection triggers data fetch,"User is on LMS DownPayment page, Multiple centers available","1. Open center dropdown
+2. Select a specific center
+3. Wait for data to load","1. API call is made with selected centerId
+2. Collections for selected center are displayed
+3. Table shows filtered data
+4. Toast notification shows API response message",centerId: valid center ID,High,Not Started
+TC_DP_004,Filter Functionality,User Selection,Verify user selection filters collections correctly,"Center is selected, Users are loaded","1. Select one or more users from dropdown
+2. Observe table data","1. Table shows only collections assigned to selected users
+2. Data includes both collector and caller assignments
+3. Filtered count updates correctly",selectedUsers: array of user objects,High,Not Started
+TC_DP_005,Filter Functionality,Unassigned Filter,Verify 'Unassigned' filter shows unassigned collections,"Center is selected, Collections with unassigned fields exist","1. Select 'Unassigned' option from user dropdown
+2. Observe table data","1. Table shows collections where collector OR caller is empty
+2. Collections with either field unassigned are included
+3. Count reflects unassigned collections only",selectedUsers: [{userId: 'UNASSIGNED'}],Medium,Not Started
+TC_DP_006,Filter Functionality,Search Text Filter,Verify search functionality filters across multiple fields,"Center selected, Collections loaded","1. Enter text in search field
+2. Type customer name/mobile/collector/caller/collectionId","1. Table filters to show matching records
+2. Search works on: customer name, mobile, collector name, caller name, collectionId
+3. Search is case-insensitive
+4. Results update in real-time","searchText: 'John', '9876543210', 'COL123'",High,Not Started
+TC_DP_007,Filter Functionality,Clear Search,Verify clearing search shows all filtered data,"Search text is entered, Results are filtered","1. Clear search text field
+2. Observe table data","1. Table shows all collections based on center/user filters
+2. Search filter is removed
+3. Full dataset (minus other filters) is displayed",searchText: '',Medium,Not Started
+TC_DP_008,Filter Functionality,No Center Selected,Verify no data shown when center not selected,"User is on LMS DownPayment page","1. Ensure no center is selected
+2. Observe table state","1. Table is empty
+2. No API calls are made
+3. No error messages displayed
+4. Empty state is handled gracefully",selectedCenter: null,High,Not Started
+TC_DP_009,Filter Functionality,No Users Selected,Verify no data shown when users not selected,"Center is selected but no users selected","1. Select a center
+2. Ensure no users are selected
+3. Observe table state","1. Table is empty (Scenario B implementation)
+2. No collections are displayed
+3. Prevents showing unfiltered data",selectedUsers: [],Medium,Not Started
+TC_DP_010,Table Operations,Column Sorting - Ascending,Verify column sorting in ascending order,"Collections are loaded","1. Click on a sortable column header (e.g., Status)
+2. Observe data order","1. Data is sorted in ascending order
+2. Sort icon shows ascending indicator
+3. Data order matches sortConfig key and direction",sortConfig: {key: 'collectionStatus', direction: 'asc'},Medium,Not Started
+TC_DP_011,Table Operations,Column Sorting - Descending,Verify column sorting in descending order,"Collections loaded, Column sorted ascending","1. Click same column header again
+2. Observe data order","1. Data is sorted in descending order
+2. Sort icon shows descending indicator
+3. Sort direction toggles correctly",sortConfig: {key: 'collectionStatus', direction: 'desc'},Medium,Not Started
+TC_DP_012,Table Operations,Column Sorting - Multiple Columns,Verify sorting across different columns,"Collections are loaded","1. Sort by one column
+2. Sort by different column
+3. Observe behavior","1. Previous sort is replaced by new sort
+2. Only one column is sorted at a time
+3. Sort state updates correctly",sortConfig: switches between columns,Low,Not Started
+TC_DP_013,Table Filtering,Status Column Filter,Verify status column filtering,"Collections with different statuses exist","1. Open status column filter dropdown
+2. Select one or more status values
+3. Observe table data","1. Table shows only collections with selected statuses
+2. Multi-select works correctly
+3. Filter persists until changed",statusColumnFilter: ['PENDING', 'PAID'],Medium,Not Started
+TC_DP_014,Table Filtering,Customer Column Filter,Verify customer name column filtering,"Collections with different customers exist","1. Open customer column filter
+2. Select one or more customer names
+3. Observe filtered results","1. Only collections for selected customers shown
+2. Multi-select functionality works
+3. Filter state is maintained",customerColumnFilter: ['Customer A', 'Customer B'],Medium,Not Started
+TC_DP_015,Table Filtering,Collector Column Filter,Verify collector column filtering,"Collections with different collectors assigned","1. Open collector column filter
+2. Select collector name(s)
+3. Observe filtered data","1. Shows collections assigned to selected collectors
+2. 'Unassigned' option shows collections without collector
+3. Multi-select works correctly",collectorColumnFilter: ['Collector A', 'Unassigned'],Medium,Not Started
+TC_DP_016,Table Filtering,Caller Column Filter,Verify caller column filtering,"Collections with different callers assigned","1. Open caller column filter
+2. Select caller name(s)
+3. Observe filtered data","1. Shows collections assigned to selected callers
+2. 'Unassigned' option shows collections without caller
+3. Filter combines correctly",callerColumnFilter: ['Caller A', 'Unassigned'],Medium,Not Started
+TC_DP_017,Table Filtering,Combined Filters,Verify multiple column filters work together,"Collections loaded with varied data","1. Apply status filter
+2. Apply customer filter
+3. Apply collector filter
+4. Observe results","1. All filters are applied together (AND logic)
+2. Results match all selected filter criteria
+3. Filter count updates correctly",Multiple filters active,High,Not Started
+TC_DP_018,Assignment Operations,Assign Collector,Verify collector can be assigned to collection,"Collections loaded, Collectors available","1. Select a collection row
+2. Choose collector from dropdown
+3. Wait for API response","1. API call made to assignUser with type 'COLLECTOR'
+2. On success, collector is updated in table
+3. Toast shows API success message
+4. Local state updates correctly","collectionId: 'COL123', collectorId: 456",High,Not Started
+TC_DP_019,Assignment Operations,Assign Caller,Verify caller can be assigned to collection,"Collections loaded, Callers available","1. Select a collection row
+2. Choose caller from dropdown
+3. Wait for API response","1. API call made to assignUser with type 'CALLER'
+2. On success, caller is updated in table
+3. Toast shows API success message
+4. State reflects new assignment","collectionId: 'COL123', callerId: 789",High,Not Started
+TC_DP_020,Assignment Operations,Prevent Concurrent Assignments,Verify only one assignment at a time,"Collections loaded","1. Initiate collector assignment
+2. Immediately try caller assignment
+3. Observe behavior","1. Second assignment is blocked while first is in progress
+2. assigningUser flag prevents concurrent calls
+3. Only one API call executes at a time",assigningUser: true/false,Medium,Not Started
+TC_DP_021,Assignment Operations,Assignment API Failure,Verify error handling for failed assignment,"Collections loaded","1. Attempt to assign collector/caller
+2. Simulate API failure
+3. Observe error handling","1. Toast displays API error message
+2. Assignment does not update locally
+3. assigningUser flag resets
+4. User can retry assignment",API returns error,High,Not Started
+TC_DP_022,Assignment Operations,Unassign Collector,Verify behavior when unassigning collector,"Collection has collector assigned","1. Select unassign/empty option for collector
+2. Observe behavior","1. No API call is made (as per current implementation)
+2. UI state remains unchanged
+3. No errors occur",collectorId: null,Low,Not Started
+TC_DP_023,Assignment Operations,Role-Based User Filtering,Verify correct users shown for collector/caller,"Center users loaded with various roles","1. View collector dropdown
+2. View caller dropdown
+3. Check available options","1. Collector dropdown shows: CENTER_MANAGER, FIELD, FI_EXEC, SALES_EXEC, TECHN
+2. Caller dropdown shows: TELE_CALLER
+3. Users filtered by role_code correctly","usersByCenterId map with role codes",Medium,Not Started
+TC_DP_024,Data Management,Fetch Collections API,Verify collections fetch with correct parameters,"Valid center selected","1. Select center
+2. Observe API call parameters","1. API called with orgId=1, centerId, collectionType='DP'
+2. All three parameters are required
+3. withCredentials: true is set","params: {orgId: 1, centerId: '123', collectionType: 'DP'}",High,Not Started
+TC_DP_025,Data Management,Fetch Users for Center,Verify users are fetched for selected center,"Center selected","1. Select center
+2. Monitor API calls","1. getUserList API called with centerId and roleCodes
+2. REQUIRED_ROLE_CODES sent as params
+3. Users excluding 'credit executive' are stored
+4. Users mapped by centerId","roleCodes: ['FIELD', 'SALES_EXEC', 'CENTER_MANAGER', 'TELE_CALLER', 'FI_EXEC', 'TECHN']",High,Not Started
+TC_DP_026,Data Management,Prevent Duplicate Fetches,Verify duplicate API calls are prevented,"Collections already fetched for center","1. Select center A
+2. Select center B
+3. Select center A again","1. Second selection of center A does not trigger API call
+2. lastFetchedCenterRef prevents duplicate
+3. fetchInProgressRef prevents concurrent calls",lastFetchedCenterRef tracking,Medium,Not Started
+TC_DP_027,Data Management,Transform Collection Data,Verify collections are transformed correctly,"API returns collection data","1. Fetch collections
+2. Examine transformed data structure","1. Each collection has centerCollectors array
+2. Each collection has centerCallers array
+3. subtype field is populated from subType
+4. Users are correctly separated by role",Transformed data structure,Medium,Not Started
+TC_DP_028,Data Management,Users by Center Mapping,Verify users are correctly mapped to centers,"Multiple centers with different users","1. Select center A
+2. Select center B
+3. View collections from both","1. Each collection gets users for its specific center
+2. usersByCenterId map maintains all center users
+3. Collections show correct collector/caller options per center",Multiple centers in usersByCenterId,Medium,Not Started
+TC_DP_029,Row Operations,Row Update Handler,Verify row data updates correctly,"Collections loaded","1. Trigger row update with allowed field
+2. Pass updates to handleRowUpdate
+3. Observe state change","1. Only ALLOWED_UPDATE_FIELDS are accepted
+2. Invalid fields are rejected and logged
+3. Table data updates for specific collectionId
+4. Other rows remain unchanged","updates: {collectionStatus: 'PAID', pendingAmount: 1000}",High,Not Started
+TC_DP_030,Row Operations,Row Update - Invalid Fields,Verify invalid fields are rejected,"Collections loaded","1. Attempt to update with disallowed field
+2. Observe behavior","1. Invalid fields are filtered out
+2. Console warning is logged
+3. Only valid fields are applied
+4. No data corruption occurs","updates: {invalidField: 'test', collectionStatus: 'PAID'}",Medium,Not Started
+TC_DP_031,Row Operations,Row Update - Whitelist Validation,Verify only whitelisted fields can update,"Collections loaded","1. Review ALLOWED_UPDATE_FIELDS constant
+2. Test each allowed field
+3. Test disallowed fields","1. Allowed: collectionStatus, pendingAmount, transactions, nextCallDate, lastCallDate
+2. All other fields rejected
+3. Validation works consistently",Each field from whitelist,Medium,Not Started
+TC_DP_032,Download Functionality,Download Excel - With Data,Verify Excel download with filtered data,"Collections loaded and filtered","1. Apply filters to get specific data
+2. Click download button
+3. Wait for download completion","1. Download button shows loading state
+2. exportFilteredCollectionData is called
+3. Filename format: LMS_DownPayment_CenterName_YYYY-MM-DD
+4. Excel file downloads successfully
+5. Success toast shows record count","filteredAndSortedData with records",High,Not Started
+TC_DP_033,Download Functionality,Download Excel - No Data,Verify warning when no data to download,"No collections match filters","1. Apply filters that return no results
+2. Click download button","1. Warning toast: 'No data available to download'
+2. No download occurs
+3. Button remains enabled",filteredAndSortedData: [],Medium,Not Started
+TC_DP_034,Download Functionality,Download Filename Generation,Verify correct filename generation,"Collections loaded, Center selected","1. Initiate download
+2. Check generated filename","1. Format: LMS_DownPayment_{CenterName}_{CurrentDate}
+2. Center name from: centerName, center_name, or name
+3. Special characters replaced with underscores
+4. Date format: YYYY-MM-DD (local system date)","filename: LMS_DownPayment_TestCenter_2025-12-01",Low,Not Started
+TC_DP_035,Download Functionality,Download Filter Metadata,Verify filter info included in export,"Filters applied, Data loaded","1. Apply various filters
+2. Initiate download
+3. Check export parameters","1. filterInfo includes: selectedCenter, selectedUsers, searchText
+2. Column filters included: status, customer, collector, caller
+3. Metadata helps understand exported data context",filterInfo object,Low,Not Started
+TC_DP_036,Download Functionality,Download During Loading,Verify download button disabled during download,"Download in progress","1. Click download button
+2. Observe button state during download","1. Button shows loading spinner
+2. Button is disabled during download
+3. isDownloading state prevents multiple clicks
+4. Button re-enables after completion",isDownloading: true,Medium,Not Started
+TC_DP_037,Error Handling,API Error - Fetch Collections,Verify error handling for collections fetch failure,"Valid center selected","1. Select center
+2. Simulate API error
+3. Observe error handling","1. Error message displayed in UI
+2. Toast shows API error message
+3. allTableData set to empty array
+4. Loading state resets
+5. User can retry",API error response,High,Not Started
+TC_DP_038,Error Handling,API Error - Fetch Users,Verify graceful handling when users fetch fails,"Center selected","1. Select center
+2. Simulate users API failure
+3. Observe behavior","1. Empty array returned for users
+2. Error logged to console
+3. Collections still attempt to load
+4. No crash occurs",Users API error,Medium,Not Started
+TC_DP_039,Error Handling,Network Timeout,Verify handling of network timeout,"Collections/users loading","1. Initiate data fetch
+2. Simulate network timeout
+3. Observe handling","1. Error caught in try-catch
+2. Appropriate error message shown
+3. Loading state resets
+4. User can retry operation",Network timeout error,Medium,Not Started
+TC_DP_040,Error Handling,Invalid Center Data,Verify handling of invalid/missing centerId,"Invalid center object","1. Pass center without centerId
+2. Observe behavior","1. No API call made if centerId invalid
+2. Data remains empty
+3. No errors thrown
+4. Graceful fallback",center: {name: 'Test'},Medium,Not Started
+TC_DP_041,State Management,Initial State,Verify correct initial state on mount,"User navigates to page","1. Open LMS DownPayment page
+2. Check initial state values","1. filters: {selectedCenter: null, selectedUsers: [], searchText: ''}
+2. allTableData: []
+3. sortConfig: {key: null, direction: 'asc'}
+4. All column filters: []
+5. loading: false, error: null",Initial state values,Low,Not Started
+TC_DP_042,State Management,Filter State Updates,Verify filter state updates correctly,"Page loaded","1. Change center selection
+2. Change user selection
+3. Update search text","1. filters state updates with each change
+2. handleFilterChange receives newFilters
+3. State reflects latest selections
+4. Re-renders trigger data filtering",Filter state transitions,Medium,Not Started
+TC_DP_043,State Management,Sort Config State,Verify sort configuration state management,"Collections loaded","1. Click column to sort ascending
+2. Click same column to sort descending
+3. Click different column","1. sortConfig.key updates to clicked column
+2. sortConfig.direction toggles asc/desc
+3. Previous sort replaced by new sort",sortConfig state transitions,Low,Not Started
+TC_DP_044,State Management,Users By Center Map,Verify usersByCenterId map updates correctly,"Multiple centers accessed","1. Select center A (fetch users)
+2. Select center B (fetch users)
+3. Return to center A","1. Map contains users for both centers
+2. Each center has its own user list
+3. Map persists across center switches
+4. Users correctly retrieved from map",usersByCenterId: Map object,Medium,Not Started
+TC_DP_045,State Management,Assignment Loading State,Verify assigningUser flag behavior,"Collections loaded","1. Start collector assignment
+2. Check assigningUser state
+3. Wait for completion","1. assigningUser set to true during API call
+2. Prevents concurrent assignments
+3. Reset to false after completion
+4. Works for both collector and caller",assigningUser state,Low,Not Started
+TC_DP_046,UI Elements,Download Button Visibility,Verify download button shows only with data,"Page loaded","1. Load page with no data
+2. Load data with filters
+3. Observe download button","1. Button hidden when filteredAndSortedData is empty
+2. Button visible when data exists
+3. Conditional rendering works correctly",Conditional rendering,Low,Not Started
+TC_DP_047,UI Elements,Download Button States,Verify download button visual states,"Collections loaded","1. Hover over download button
+2. Click to download
+3. Observe state changes","1. Green background (bg-green-600) on normal state
+2. Darker green on hover (hover:bg-green-700)
+3. Gray background when disabled/downloading
+4. Shows spinner during download",Button state transitions,Low,Not Started
+TC_DP_048,UI Elements,Toast Notifications,Verify toast notifications for all actions,"Collections loaded","1. Perform successful assignment
+2. Trigger API error
+3. Download data
+4. Perform search with results","1. Success toasts show API messages
+2. Error toasts show API error messages
+3. Warning for no download data
+4. Info messages as appropriate
+5. Only API messages shown (no duplicates)",Toast message flow,Medium,Not Started
+TC_DP_049,UI Elements,Empty State Handling,Verify empty state display,"No center/users selected OR no data","1. View page with no selections
+2. View page with selections but no data
+3. Check UI state","1. Empty table shown gracefully
+2. No error messages for intentional empty states
+3. User understands why no data shown
+4. Clear call-to-action to select filters",Empty state UI,Medium,Not Started
+TC_DP_050,UI Elements,Data Test IDs,Verify all data-testid attributes present,"Page rendered","1. Inspect all major elements
+2. Check for data-testid attributes
+3. Verify test automation compatibility","1. All major elements have data-testid
+2. IDs follow naming convention
+3. Elements are testable via Playwright
+4. No duplicate IDs exist",data-testid attributes,Low,Not Started
+TC_DP_051,Performance,Memoization - Base Filtered Data,Verify baseFilteredData memoization,"Collections loaded, Filters change","1. Apply filters
+2. Trigger re-render without filter change
+3. Monitor computation","1. useMemo prevents unnecessary recalculation
+2. Only recomputes when dependencies change
+3. Performance optimized for large datasets",useMemo dependencies,Low,Not Started
+TC_DP_052,Performance,Memoization - Sorted Data,Verify filteredAndSortedData memoization,"Data filtered and sorted","1. Trigger re-render
+2. Monitor sort computation
+3. Check optimization","1. Sorting only occurs when dependencies change
+2. useMemo prevents redundant sorts
+3. Large datasets handled efficiently",useMemo for sorting,Low,Not Started
+TC_DP_053,Performance,Callback Optimization,Verify useCallback for event handlers,"Page rendered","1. Check handleRowUpdate callback
+2. Check other handlers
+3. Monitor re-renders","1. useCallback prevents function recreation
+2. Dependencies properly defined
+3. Child components don't re-render unnecessarily",useCallback usage,Low,Not Started
+TC_DP_054,Performance,Prevent Duplicate API Calls,Verify API call deduplication,"Center selected","1. Rapidly select same center multiple times
+2. Monitor network requests
+3. Check fetchInProgressRef","1. Only one API call made per center
+2. fetchInProgressRef blocks concurrent calls
+3. lastFetchedCenterRef prevents duplicates",Ref-based optimization,Medium,Not Started
+TC_DP_055,Integration,CollectionDownpaymentTable Integration,Verify table component integration,"Collections loaded","1. Observe table rendering
+2. Check prop passing
+3. Test interactions","1. All required props passed correctly
+2. Table receives filteredAndSortedData
+3. Callbacks work: onSort, onCollectorChange, onCallerChange
+4. Table renders without errors",Component integration,High,Not Started
+TC_DP_056,Integration,LMSSearchFilter Integration,Verify search filter component integration,"Page loaded","1. Interact with search filter
+2. Check filter state
+3. Verify communication","1. onFilterChange callback works
+2. initialFilters prop set correctly
+3. Filter changes propagate to parent
+4. Two-way data flow functions",Component integration,High,Not Started
+TC_DP_057,Integration,CollectionBanner Integration,Verify banner component integration,"Page loaded","1. Check banner display
+2. Verify props","1. heading shows 'LMS'
+2. subHeading shows 'Down Payment'
+3. Banner renders in correct position",Component integration,Low,Not Started
+TC_DP_058,Integration,LoadingOverlay Integration,Verify loading overlay integration,"Data fetch initiated","1. Trigger data load
+2. Observe overlay
+3. Check props","1. isLoading prop controls visibility
+2. message shows 'Loading DownPayment Collections'
+3. dataTestId set correctly
+4. Overlay disappears after load",Component integration,Medium,Not Started
+TC_DP_059,Data Validation,Collection Type Parameter,Verify collectionType DP is sent,"Center selected","1. Monitor API call
+2. Check parameters","1. collectionType parameter = 'DP'
+2. Required for backend filtering
+3. Ensures only DownPayment collections returned",collectionType: 'DP',High,Not Started
+TC_DP_060,Data Validation,Role Code Normalization,Verify role code case-insensitive matching,"Users with various role code formats","1. Load users with different case role codes
+2. Check filtering","1. Role codes normalized to uppercase
+2. hasAllowedRoleCode works case-insensitively
+3. Users filtered correctly regardless of case","roleCodes: 'field', 'FIELD', 'Field'",Medium,Not Started
+TC_DP_061,Data Validation,User Transform Function,Verify user transformation to dropdown format,"Raw user data from API","1. Fetch users
+2. Check transformed format","1. Transformed user has: id, name, roleCode, userRole, role
+2. transformUser handles various field names
+3. Consistent format for dropdowns",User object transformation,Low,Not Started
+TC_DP_062,Data Validation,Empty User Object Validation,Verify hasValidData helper function,"Collections with empty/null user fields","1. Check collections with unassigned users
+2. Verify validation","1. hasValidData returns false for null/empty objects
+2. Returns false when object has no id
+3. Returns true for valid user objects",User validation logic,Medium,Not Started
+TC_DP_063,Edge Cases,No Collections for Center,Verify handling when center has no collections,"Center with 0 collections","1. Select center with no collections
+2. Observe behavior","1. API returns empty data array
+2. Table shows empty state
+3. Toast shows API message (e.g., 'No collections found')
+4. No errors occur",Empty collections response,Medium,Not Started
+TC_DP_064,Edge Cases,Special Characters in Search,Verify search with special characters,"Collections loaded","1. Enter special characters in search
+2. Observe filtering","1. Search handles special chars safely
+2. No regex errors
+3. Matching works or returns empty
+4. No crashes",searchText: '@#$%^&*()',Low,Not Started
+TC_DP_065,Edge Cases,Very Long Search String,Verify handling of very long search input,"Collections loaded","1. Enter very long string in search
+2. Observe performance","1. Search completes without hang
+2. Results filtered correctly
+3. Performance acceptable
+4. No memory issues",searchText: 500+ characters,Low,Not Started
+TC_DP_066,Edge Cases,Rapid Filter Changes,Verify handling of rapid filter toggling,"Collections loaded","1. Rapidly change filters multiple times
+2. Observe state stability","1. State updates correctly
+2. No race conditions
+3. Final state reflects last change
+4. No UI glitches",Rapid filter changes,Low,Not Started
+TC_DP_067,Edge Cases,Center With No Users,Verify behavior when center has no users,"Center with no assigned users","1. Select center with empty user list
+2. Observe behavior","1. Empty collectors/callers arrays
+2. Dropdowns show no options
+3. No assignment possible
+4. No errors occur",Empty centerUsers,Medium,Not Started
+TC_DP_068,Edge Cases,Null Center Object,Verify null safety for center handling,"Null center passed","1. Pass null as selectedCenter
+2. Check error handling","1. No crash occurs
+2. getCenterId returns undefined
+3. No API call made
+4. Empty state shown",selectedCenter: null,Low,Not Started
+TC_DP_069,Edge Cases,Malformed Collection Data,Verify handling of unexpected API response format,"API returns malformed data","1. Simulate malformed API response
+2. Observe error handling","1. Error caught in try-catch
+2. Error message displayed
+3. Empty data shown
+4. User can retry",Malformed JSON,Medium,Not Started
+TC_DP_070,Accessibility,Keyboard Navigation,Verify keyboard navigation works,"Page loaded with data","1. Use Tab key to navigate
+2. Use Enter to interact
+3. Check focus indicators","1. All interactive elements are keyboard accessible
+2. Focus indicators visible
+3. Logical tab order
+4. Enter/Space activate buttons",Keyboard-only navigation,Low,Not Started
+TC_DP_071,Accessibility,Screen Reader Compatibility,Verify screen reader support,"Screen reader active","1. Navigate page with screen reader
+2. Check announcements
+3. Verify labels","1. All elements properly labeled
+2. State changes announced
+3. Table structure understood by screen reader
+4. ARIA attributes present where needed",Screen reader testing,Low,Not Started
+TC_DP_072,Accessibility,Color Contrast,Verify sufficient color contrast,"Page rendered","1. Check all text/background combos
+2. Use contrast checker tool
+3. Verify WCAG compliance","1. All text meets WCAG AA standards
+2. Interactive elements clearly distinguishable
+3. Disabled states visible
+4. Error states clear",WCAG AA compliance,Low,Not Started
+TC_DP_073,Regression,Previous Center Data Not Retained,Verify center switch clears previous data,"Center A selected with data","1. Select Center A (load data)
+2. Select Center B (load data)
+3. Observe data change","1. Center B data replaces Center A data completely
+2. No mixing of data between centers
+3. Filters reset appropriately",Data isolation between centers,Medium,Not Started
+TC_DP_074,Regression,Filter Combination Consistency,Verify filters combine correctly in all scenarios,"Various filter combinations","1. Test all filter combinations
+2. Verify AND logic
+3. Check edge cases","1. All filters applied with AND logic
+2. No filters ignored
+3. Results always match all active filters
+4. Consistent behavior",All filter permutations,High,Not Started
+TC_DP_075,Regression,Sort Persistence,Verify sort persists through filter changes,"Data sorted, filters change","1. Sort data by column
+2. Apply/change filters
+3. Check sort state","1. Sort configuration maintained
+2. Filtered data is also sorted
+3. Sort direction doesn't reset
+4. User intent preserved",sortConfig persistence,Low,Not Started
+TC_DP_076,Security,Credentials in API Calls,Verify withCredentials flag is set,"API calls being made","1. Monitor network requests
+2. Check request configuration
+3. Verify credentials","1. All API calls have withCredentials: true
+2. Cookies/auth sent with requests
+3. CORS headers handled correctly",withCredentials: true,Medium,Not Started
+TC_DP_077,Security,Role-Based User Filtering,Verify users filtered by allowed roles only,"Users with various roles loaded","1. Load users for center
+2. Check displayed users
+3. Verify filtering","1. Only ALLOWED_COLLECTOR_ROLE_CODES shown for collectors
+2. Only ALLOWED_CALLER_ROLE_CODES shown for callers
+3. Unauthorized roles excluded
+4. Security maintained",Role-based access control,High,Not Started
+TC_DP_078,Business Logic,Unassigned Logic - Either Field,Verify unassigned includes either collector OR caller empty,"Mixed assigned/unassigned collections","1. Select 'Unassigned' filter
+2. Observe results","1. Collections with empty collector shown
+2. Collections with empty caller shown
+3. Collections with both empty shown
+4. OR logic applied correctly",Unassigned logic validation,High,Not Started
+TC_DP_079,Business Logic,User Match Logic - Either Field,Verify user match works for collector OR caller,"Collections assigned to various users","1. Select specific user
+2. Check filtered results","1. Collections where user is collector shown
+2. Collections where user is caller shown
+3. OR logic for user matching
+4. All relevant collections included",User matching logic,High,Not Started
+TC_DP_080,Business Logic,Combined Unassigned and User Selection,Verify Unassigned + Users selection logic,"Mixed data available","1. Select 'Unassigned' + specific users
+2. Observe filtered results","1. Shows unassigned collections
+2. Shows collections assigned to selected users
+3. Union of both sets (OR logic)
+4. Comprehensive results",Combined filter logic,Medium,Not Started
